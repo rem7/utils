@@ -1,0 +1,13 @@
+[Unit]
+Description=junos switch temperature
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart= /usr/local/bin/juniper-monitor
+Restart=always
+
+
+[Install]
+WantedBy=multi-user.target
