@@ -2,7 +2,7 @@
 #
 # bash <(curl -s https://raw.githubusercontent.com/rem7/utils/master/scripts/add-user-deb.sh yanko)
 
-adduser --disabled-password --gecos "" -q $3
+adduser --disabled-password --gecos "" -q $1
 usermod -a -G admin $1
 sudo -u $1 mkdir ~$1/.ssh
 sudo -u $1 chmod 755 ~$1/.ssh
