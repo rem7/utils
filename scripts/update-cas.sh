@@ -2,6 +2,7 @@
 # script to download TrustedCertificateAuthority 
 # make sure to update /etc/ssh/sshd_config and add:
 # TrustedUserCAKeys /etc/ssh/cas.pub
+# bash <(curl -s https://raw.githubusercontent.com/rem7/utils/main/scripts/update-cas.sh)
 
 dir=$(mktemp -d)
 echo $dir
