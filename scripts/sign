@@ -1,16 +1,28 @@
 #!/bin/bash
 
+pubkey_path=$1
+pubkey=`cat $pubkey_path | awk '{print $1 " " $2}'`
+signed_key_out=${pubkey_path::${#pubkey_path}-4}-cert.pub
+optional_user=$2
+# signed_key_out=${pubkey_path::-4}-cert.pub
+# echo $pubkey_path
+# echo $pubkey
+# echo $signed_key_out
+
 AWS_REGION=us-west-2
 AWS_ACCESS_KEY_ID=$(pass aws/ydb-aws.aws_access_key_id)
 AWS_SECRET_ACCESS_KEY=$(pass aws/ydb-aws.aws_secret_access_key)
 LAMBDA_URL=$(pass aws/sign-url)
 
-pubkey=`cat ~/.ssh/id_ed25519_sk.pub | awk '{print $1 " " $2}'`
 
 jo -p expire=10d \
 	host_user=rem7-ubuntu \
 	key_type=user \
 	public_key="$pubkey" \
-	principal_list=$(jo -a "rem7" "ubuntu" "root" "ec2-user") |
+	principal_list=$(jo -a "ubuntu" "ec2-user" $optional_user ) |
 	curl -s --aws-sigv4 "aws:amz:us-west-2:lambda" --user $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY \
-	-H 'content-type: application/json' --data-binary @- $LAMBDA_URL > ~/.ssh/id_ed25519_sk-cert.pub
+	-H 'content-type: application/json' --data-binary @- $LAMBDA_URL > $signed_key_out
+
+chmod 600 $signed_key_out
+
+exit 0
