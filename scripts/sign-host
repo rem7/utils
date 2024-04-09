@@ -16,7 +16,7 @@ jo -p expire=10d \
         host_user=<HOST_USER> \
         key_type=host \
         public_key="$pubkey" \
-        principal_list=$(jo -a <HOSTNAME> |
+        principal_list=$(jo -a <HOSTNAME>) |
         curl -s --aws-sigv4 "aws:amz:us-west-2:lambda" --user $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY \
         --json @- $LAMBDA_URL > /etc/ssh/ssh_host_rsa_key-cert.pub
 
