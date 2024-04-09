@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# add to crontab
+# 1 21 * * 5 /opt/sign-host > /etc/ssh/ssh_host_rsa_key-cert.pub
+
+AWS_REGION=us-west-2
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+LAMBDA_URL=
+
+pubkey=`cat /etc/ssh/ssh_host_rsa_key.pub | awk '{print $1 " " $2}'`
+
+jo -p expire=10d \
+        host_user=somename \
+        key_type=host \
+        public_key="$pubkey" \
+        principal_list=$(jo -a "host.example.com") |
+        curl --aws-sigv4 "aws:amz:us-west-2:lambda" --user $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY \
+        --json @- $LAMBDA_URL
